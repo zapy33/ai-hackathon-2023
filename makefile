@@ -1,17 +1,14 @@
-# Makefile for assembling and running the bootloader
+# Makefile
 
-ASSEMBLER=nasm
-ASSEMBLY_SOURCE=bootloader.asm
-ASSEMBLY_OUTPUT=bootloader.bin
-QEMU=qemu-system-i386
+.PHONY: all clean run
 
-all: run
-
-assemble:
-	$(ASSEMBLER) -f bin $(ASSEMBLY_SOURCE) -o $(ASSEMBLY_OUTPUT)
-
-run: assemble
-	$(QEMU) -fda $(ASSEMBLY_OUTPUT)
+all: kernel.bin
 
 clean:
-	rm -f $(ASSEMBLY_OUTPUT)
+	rm -f kernel.bin
+
+run: kernel.bin
+	qemu-system-i386 -fda kernel.bin
+
+kernel.bin: bootloader.asm kernel.asm
+	nasm -f bin -o kernel.bin bootloader.asm
